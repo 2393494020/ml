@@ -1,8 +1,6 @@
 from numpy import *
 import operator
 
-
-
 def createDataSet():
     group = array([[1.0, 1.1],[1.0, 1.0],[0, 0],[0, 0.1]])
     labels = ['A', 'A', 'B', 'B']
@@ -30,8 +28,64 @@ def classify0(inX, dataSet, labels, k):
     
     return sortedClassCount[0][0]
 
+def file2matrix(filename):
+    fr = open(filename)
+    numberOfLines = len(fr.readlines())
+    returnMat = zeros((numberOfLines, 3))
+    classLaberVector = []
+    fr = open(filename)
+    index = 0
+
+    for line in fr.readlines():
+        line = line.strip()
+        listFromLine = line.split('\t')
+        returnMat[index,:] = listFromLine[0:3]
+        classLaberVector.append(int(listFromLine[-1]))
+        index += 1
+    
+    return returnMat, classLaberVector
+
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+
+    normDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals, (m, 1))
+    normDataSet = normDataSet/tile(ranges, (m, 1))
+
+    return normDataSet, ranges, minVals
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+def show(data, labels):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.scatter(data[:, 0], data[:, 1], 15.0*array(labels), 15.0*array(labels))
+    plt.show()
+
 if __name__ == "__main__":
     group, labels = createDataSet()
 
-    label = classify0([0, 0], group, labels, 3)
-    print(label)
+    matrixData, labels = file2matrix('../datingTestSet2.txt')
+    
+    normMat, ranges, minVals = autoNorm(matrixData)
+
+    # frequent flyier miles earned per year|percentage of time spent playing video games|liters of ice cream consumed per week
+    # 1 did not like
+    #  liked in small doses
+    #  liked in large doses
+    # show(matrixData, labels)
+
+    mat1 = mat([
+        [1, 2, 3],
+        [4, 5, 6]
+    ])
+
+    minVal = mat1.min(0)
+    maxVal = mat1.max(0)
+
+    print(minVal)
+    print(maxVal)
