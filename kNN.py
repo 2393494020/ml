@@ -14,15 +14,15 @@ def classify0(inX, dataSet, labels, k):
     distances = sqDistances**0.5
     sortedDistIndicies = distances.argsort()
 
-    print(distances)
-    print(sortedDistIndicies)
+    # print(distances)
+    # print(sortedDistIndicies)
 
     classCount = {}
     for i in range(k):
         voteIlabel = labels[sortedDistIndicies[i]]
         classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
     
-    print(classCount)
+    # print(classCount)
 
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     
@@ -46,16 +46,35 @@ def file2matrix(filename):
     return returnMat, classLaberVector
 
 def autoNorm(dataSet):
+    # 提取每一列的最小、最大值
     minVals = dataSet.min(0)
     maxVals = dataSet.max(0)
     ranges = maxVals - minVals
 
-    normDataSet = zeros(shape(dataSet))
+    # normDataSet = zeros(shape(dataSet))
     m = dataSet.shape[0]
     normDataSet = dataSet - tile(minVals, (m, 1))
-    normDataSet = normDataSet/tile(ranges, (m, 1))
+    normDataSet = normDataSet / tile(ranges, (m, 1))
 
     return normDataSet, ranges, minVals
+
+def dataingClassTest():
+    hoRatio = 0.10
+    matrixData, labels = file2matrix('../datingTestSet2.txt')
+
+    normDataSet, ranges, minVals = autoNorm(matrixData)
+    m = normDataSet.shape[0]
+    numTestVecs = int( m * hoRatio )
+    errorCount = 0.0
+    for i in range( numTestVecs ):
+        predict = classify0( normDataSet[i, :], normDataSet[numTestVecs:m, :], labels[numTestVecs:], 3 )
+        if (predict != labels[i: i + 1][0]):
+            errorCount += 1
+
+    print(errorCount)
+    print(numTestVecs)
+    print(len(normDataSet))
+    print(errorCount / numTestVecs)
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -67,25 +86,15 @@ def show(data, labels):
     plt.show()
 
 if __name__ == "__main__":
-    group, labels = createDataSet()
+    # group, labels = createDataSet()
+    # print( classify0([1.1, 1.1], group, labels, 3) )
 
-    matrixData, labels = file2matrix('../datingTestSet2.txt')
-    
-    normMat, ranges, minVals = autoNorm(matrixData)
-
+    # matrixData, labels = file2matrix('../datingTestSet2.txt')    
+    # normMat, ranges, minVals = autoNorm(matrixData)
     # frequent flyier miles earned per year|percentage of time spent playing video games|liters of ice cream consumed per week
     # 1 did not like
-    #  liked in small doses
-    #  liked in large doses
-    # show(matrixData, labels)
+    # liked in small doses
+    # liked in large doses
+    # show(normMat, labels)
 
-    mat1 = mat([
-        [1, 2, 3],
-        [4, 5, 6]
-    ])
-
-    minVal = mat1.min(0)
-    maxVal = mat1.max(0)
-
-    print(minVal)
-    print(maxVal)
+    dataingClassTest()
