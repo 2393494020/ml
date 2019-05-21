@@ -1,6 +1,8 @@
 from numpy import *
 import operator
 
+from os import listdir
+
 def createDataSet():
     group = array([[1.0, 1.1],[1.0, 1.0],[0, 0],[0, 0.1]])
     labels = ['A', 'A', 'B', 'B']
@@ -85,6 +87,17 @@ def show(data, labels):
     ax.scatter(data[:, 0], data[:, 1], 15.0*array(labels), 15.0*array(labels))
     plt.show()
 
+def img2vector(filename):
+    imgVector = zeros((1, 1024))
+    fr = open(filename)
+    lines = fr.readlines()
+    for i in range(32):
+        line = lines[i].strip()
+        for j in range(32):
+            imgVector[0, 32 * i + j] = int(line[j])
+
+    return imgVector
+
 if __name__ == "__main__":
     # group, labels = createDataSet()
     # print( classify0([1.1, 1.1], group, labels, 3) )
@@ -97,4 +110,10 @@ if __name__ == "__main__":
     # liked in large doses
     # show(normMat, labels)
 
-    dataingClassTest()
+    # dataingClassTest()
+
+    trainingDir = 'E:\\github\\Machine-Learning-in-Action-Python3\\ch01-KNN\digits\\trainingDigits\\'
+    files = listdir(trainingDir)
+    for file in files[0:2]:
+        print(file)
+        print(img2vector(trainingDir + file))
