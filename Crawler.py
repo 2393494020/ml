@@ -86,6 +86,6 @@ def chrome():
 if __name__ == '__main__':
     
     for i in range(15):
+        print(i)
         verifyCode('http://127.0.0.1:1080')
         time.sleep(60)
-        print(i)
