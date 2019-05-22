@@ -98,7 +98,26 @@ def img2vector(filename):
 
     return imgVector
 
-if __name__ == "__main__":
+def handwritingClassTest():
+    trainingDir = 'E:\\github\\Machine-Learning-in-Action-Python3\\ch01-KNN\digits\\trainingDigits\\'
+    trainingFiles = listdir(trainingDir)
+    m = 1900
+    trainingData = zeros((m, 1024))
+    labels = []
+    i = 0
+    for file in trainingFiles[0:m]:
+        labels.append( int( file[0] ) )
+        trainingData[i,:] = img2vector(trainingDir + file)
+        i += 1
+    
+    testDir = 'E:\\github\\Machine-Learning-in-Action-Python3\\ch01-KNN\digits\\testDigits\\'
+    testFiles = listdir(testDir)
+    for file in testFiles[0:200]:
+        predict = classify0( img2vector(testDir + file), trainingData, labels, 3 )
+        print('predict', predict, 'real', file)
+
+
+if __name__ == '__main__':
     # group, labels = createDataSet()
     # print( classify0([1.1, 1.1], group, labels, 3) )
 
@@ -112,8 +131,4 @@ if __name__ == "__main__":
 
     # dataingClassTest()
 
-    trainingDir = 'E:\\github\\Machine-Learning-in-Action-Python3\\ch01-KNN\digits\\trainingDigits\\'
-    files = listdir(trainingDir)
-    for file in files[0:2]:
-        print(file)
-        print(img2vector(trainingDir + file))
+    handwritingClassTest()
