@@ -142,14 +142,7 @@ if __name__ == '__main__':
         [687.8481, 480.4759, 433.8324, 289.202]
     ])
 
-    rows = data.shape[0]
-    # print(rows)
     print(data.min(1))
-    result = numpy.where(data == numpy.amin(data))
-    listOfCordinates = list(zip(result[0], result[1]))
-    for cord in listOfCordinates:
-        print(cord)
-    # for r in range(rows):
-        # print(data[r,:].index(data[r]))
+    print(data.argmin(1))
     
     # https://thispointer.com/numpy-amin-find-minimum-value-in-numpy-array-and-its-index/

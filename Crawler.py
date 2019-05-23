@@ -38,7 +38,7 @@ def verifyCode(proxy_addr):
         proxy = request.ProxyHandler({'http': proxy_addr})
         opener = request.build_opener(proxy, request.HTTPHandler, cookieHandler)
     else:
-        opener = request.build_opener(handler)
+        opener = request.build_opener(cookieHandler)
 
     request.install_opener(opener)
 
@@ -78,7 +78,7 @@ def verifyCode(proxy_addr):
 
     print(json.loads(res))
 
-    log = open('E:\\crawler.log', 'a')
+    log = open('D:\\crawler.log', 'a')
     log.write('[' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] : ' + json.dumps(json.loads(res)) + '\n')
     log.close()
 
@@ -168,21 +168,21 @@ def get_trace(distance):
     # 创建存放轨迹信息的列表
     trace = []
     # 设置加速的距离
-    faster_distance = distance * (4 / 5)
+    faster_distance = distance * (3 / 5)
     # 设置初始位置、初始速度、时间间隔
-    start, v0, t = 0, 0, 0.2
+    start, v0, t = 0, 0, 0.5
     # 当尚未移动到终点时
     while start < distance:
         # 如果处于加速阶段
         if start < faster_distance:
             # 设置加速度为2
-            a = 1.5
+            a = 2
         # 如果处于减速阶段
         else:
             # 设置加速度为-3
             a = -3
         # 移动的距离公式
-        move = v0 * t + 1 / 2 * a * t * t
+        move = v0 * t + (1 / 2) * a * t * t
         # 此刻速度
         v = v0 + a * t
         # 重置初速度
@@ -191,12 +191,12 @@ def get_trace(distance):
         start += move
         # 将移动的距离加入轨迹列表
         trace.append(round(move))
-    # 返回轨迹信息
+    
     return trace
 
 def move_to_gap(browser, trace):
-    print(trace)
-    # 得到滑块标签
+    # print(trace)
+    
     slider = WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'gt_slider_knob')))
     # 使用click_and_hold()方法悬停在滑块上，perform()方法用于执行
     ActionChains(browser).click_and_hold(slider).perform()
@@ -204,16 +204,16 @@ def move_to_gap(browser, trace):
         # 使用 move_by_offset()方法拖动滑块，perform()方法用于执行
         ActionChains(browser).move_by_offset(xoffset=x, yoffset=0).perform()
     # 模拟人类对准时间
-    time.sleep(3)
-    # 释放滑块
+    time.sleep(2)
+    
     ActionChains(browser).release().perform()
 
 def chrome():
     chromeOptions = webdriver.ChromeOptions()
-    chromeOptions.add_argument('--proxy-server=http://127.0.0.1:1080')
+    # chromeOptions.add_argument('--proxy-server=http://127.0.0.1:1080')
     chromeOptions.add_argument('user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"')
 
-    browser = webdriver.Chrome(executable_path='E:\\github\\ml\\chromedriver.exe', chrome_options=chromeOptions)
+    browser = webdriver.Chrome(executable_path='D:\\github\\ml\\chromedriver.exe', chrome_options=chromeOptions)
     # browser = webdriver.Chrome(executable_path='E:\\github\\ml\\chromedriver.exe')
     browser.get('https://www.tianyancha.com')
     # browser.maximize_window()
@@ -228,23 +228,32 @@ def chrome():
         time.sleep(2)
         browser.find_element_by_id('smsCodeBtnPopup').click()
 
-        bg, bg_position = get_image_info(browser, 'bg')
-        fullbg, fullbg_position = get_image_info(browser, 'fullbg')
+        time.sleep(2)
+        retry = 3
+        while(browser.find_element_by_id('smsCodeBtnPopup').text == '获取验证码' and retry > 0):
+            bg, bg_position = get_image_info(browser, 'bg')
+            fullbg, fullbg_position = get_image_info(browser, 'fullbg')
 
-        bg_first_line_img, bg_second_line_img = Corp(bg, bg_position)
-        fullbg_first_line_img, fullbg_second_line_img = Corp(fullbg, fullbg_position)
+            bg_first_line_img, bg_second_line_img = Corp(bg, bg_position)
+            fullbg_first_line_img, fullbg_second_line_img = Corp(fullbg, fullbg_position)
 
-        bg_image = put_imgs_together(bg_first_line_img, bg_second_line_img, 'E:\\bg.jpg')
-        fullbg_image = put_imgs_together(fullbg_first_line_img, fullbg_second_line_img, 'E:\\fullbg.jpg')
+            bg_image = put_imgs_together(bg_first_line_img, bg_second_line_img, 'D:\\bg.jpg')
+            fullbg_image = put_imgs_together(fullbg_first_line_img, fullbg_second_line_img, 'D:\\fullbg.jpg')
 
-        distance = get_distance(bg_image, fullbg_image)
-        print(distance)
+            distance = get_distance(bg_image, fullbg_image)
+            # print(distance)
 
-        trace = get_trace(distance - 10)
-        move_to_gap(browser, trace)
-    
-    finally:    
-        time.sleep(5)
+            trace = get_trace(distance - 10)
+            move_to_gap(browser, trace)            
+
+            time.sleep(5)
+            retry -= 1
+        
+        print(browser.find_element_by_id('smsCodeBtnPopup').text)
+    except:
+        browser.quit()
+    finally:
+        time.sleep(60)
         browser.quit()
 
 
@@ -252,7 +261,7 @@ if __name__ == '__main__':
     # chrome()
     for i in range(100):
         chrome()
-        time.sleep(10)
+        time.sleep(5)
 
     # verifyCode('http://127.0.0.1:1080')
     
