@@ -1,3 +1,4 @@
+import numpy
 from numpy import *
 import operator
 
@@ -131,4 +132,24 @@ if __name__ == '__main__':
 
     # dataingClassTest()
 
-    handwritingClassTest()
+    # handwritingClassTest()
+
+    data = array([
+        [1117.7328, 1264.0096, 504.3783, 714.5058],
+        [216.0899, 550.7025, 681.2784, 22.7801],
+        [978.6874, 733.3165, 675.344, 121.3685],
+        [808.4279, 443.1026, 137.3038, 45.7453],
+        [687.8481, 480.4759, 433.8324, 289.202]
+    ])
+
+    rows = data.shape[0]
+    # print(rows)
+    print(data.min(1))
+    result = numpy.where(data == numpy.amin(data))
+    listOfCordinates = list(zip(result[0], result[1]))
+    for cord in listOfCordinates:
+        print(cord)
+    # for r in range(rows):
+        # print(data[r,:].index(data[r]))
+    
+    # https://thispointer.com/numpy-amin-find-minimum-value-in-numpy-array-and-its-index/
