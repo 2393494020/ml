@@ -209,11 +209,12 @@ def move_to_gap(browser, trace):
     ActionChains(browser).release().perform()
 
 def chrome():
-    chromeOptions = webdriver.ChromeOptions()
-    # chromeOptions.add_argument('--proxy-server=http://127.0.0.1:1080')
-    chromeOptions.add_argument('user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"')
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--proxy-server=http://127.0.0.1:1080')
+    chrome_options.add_argument('user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"')
 
-    browser = webdriver.Chrome(executable_path='D:\\github\\ml\\chromedriver.exe', chrome_options=chromeOptions)
+    browser = webdriver.Chrome(executable_path='D:\\github\\ml\\chromedriver.exe', chrome_options=chrome_options)
     # browser = webdriver.Chrome(executable_path='E:\\github\\ml\\chromedriver.exe')
     browser.get('https://www.tianyancha.com')
     # browser.maximize_window()
@@ -251,9 +252,8 @@ def chrome():
         
         print(browser.find_element_by_id('smsCodeBtnPopup').text)
     except:
-        browser.quit()
+        print('error:')
     finally:
-        time.sleep(60)
         browser.quit()
 
 
@@ -261,7 +261,7 @@ if __name__ == '__main__':
     # chrome()
     for i in range(100):
         chrome()
-        time.sleep(5)
+        time.sleep(60)
 
     # verifyCode('http://127.0.0.1:1080')
     
