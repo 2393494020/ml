@@ -1,6 +1,4 @@
-# python -m pip install numpy
-# python -m pip install scipy
-# python -m pip install matplotlib
+# -*- coding: utf-8 -*-
 
 import time
 from datetime import datetime
@@ -25,10 +23,10 @@ def test_numpy():
     print(mat3)
     print(eye(2))
 
-    t = sp.linspace(0, 1, 100)
+    t = linspace(-2, 2, 100)
 
-    plt.plot(t, t**2)
-    # plt.show()
+    plt.plot(t, t**3)
+    plt.show()
 
 
 if __name__ == "__main__":
